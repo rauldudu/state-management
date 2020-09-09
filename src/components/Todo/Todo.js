@@ -14,11 +14,10 @@ export const Todo = () => {
 
   if (error) {
     return (
-      <h1>
-        There was an error.
-        <br />
+      <>
+        <h1>There was an error.</h1>
         <button onClick={() => dispatch(fetchTodo(id))}>Try again</button>
-      </h1>
+      </>
     )
   }
 

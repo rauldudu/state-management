@@ -1,44 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { fetchTodo } from '../../api/fetchTodo'
+import { usePromise } from '../../hooks/usePromise'
 
 export const Todo = () => {
   const { id } = useParams()
 
-  const [data, setData] = useState({})
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    fetchTodo(id)
-      .then(res => {
-        setLoading(false)
-        setData(res)
-      })
-      .catch(err => {
-        setLoading(false)
-        setError(err)
-      })
-  }, [id])
+  const { data, loading, error, execute } = usePromise(() => fetchTodo(id), [
+    id
+  ])
 
   if (error) {
     return (
       <>
         <h1>There was an error.</h1>
-        <button
-          onClick={() =>
-            fetchTodo(id)
-              .then(res => {
-                setLoading(false)
-                setData(res)
-              })
-              .catch(err => {
-                setLoading(false)
-                setError(err)
-              })
-          }>
-          Try again
-        </button>
+        <button onClick={execute}>Try again</button>
       </>
     )
   }

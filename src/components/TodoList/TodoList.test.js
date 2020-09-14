@@ -1,13 +1,11 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
 import fetchMock from 'fetch-mock'
 import {
   render,
   waitForElementToBeRemoved,
   screen
 } from '@testing-library/react'
-import { configureStore } from '../../store/store'
 import { TodoList } from './TodoList'
 
 const todos = [
@@ -25,11 +23,9 @@ const todos = [
 
 const setup = () => {
   return render(
-    <Provider store={configureStore()}>
-      <MemoryRouter>
-        <TodoList />
-      </MemoryRouter>
-    </Provider>
+    <MemoryRouter>
+      <TodoList />
+    </MemoryRouter>
   )
 }
 

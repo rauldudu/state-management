@@ -1,22 +1,43 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { fetchTodo } from '../../actions/todo'
+import { fetchTodo } from '../../api/fetchTodo'
 
 export const Todo = () => {
   const { id } = useParams()
-  const dispatch = useDispatch()
-  const { data, loading, error } = useSelector(state => state.todo)
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    dispatch(fetchTodo(id))
-  }, [dispatch, id])
+    fetchTodo(id)
+      .then(res => {
+        setData(res)
+        setLoading(false)
+      })
+      .catch(error => {
+        setError(error)
+        setLoading(false)
+      })
+  }, [id])
 
   if (error) {
     return (
       <>
         <h1>There was an error.</h1>
-        <button onClick={() => dispatch(fetchTodo(id))}>Try again</button>
+        <button
+          onClick={() => {
+            fetchTodo(id)
+              .then(res => {
+                setData(res)
+                setLoading(false)
+              })
+              .catch(error => {
+                setError(error)
+                setLoading(false)
+              })
+          }}>
+          Try again
+        </button>
       </>
     )
   }

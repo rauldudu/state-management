@@ -1,12 +1,13 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
-
 import fetchMock from 'fetch-mock'
 import {
   render,
   waitForElementToBeRemoved,
   screen
 } from '@testing-library/react'
+import { QueryClientProvider } from 'react-query'
+import { queryClient } from '../../services/queryClient'
 import { TodoList } from './TodoList'
 
 const todos = [
@@ -24,14 +25,21 @@ const todos = [
 
 const setup = () => {
   return render(
-    <MemoryRouter>
-      <TodoList />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <TodoList />
+      </MemoryRouter>
+    </QueryClientProvider>
   )
 }
 
+beforeEach(() => {
+  queryClient.clear()
+  fetchMock.restore()
+})
+
 test('loads the todos', async () => {
-  fetchMock.get(/todos/, todos)
+  fetchMock.get(/todos/, todos, { delay: 500 })
 
   setup()
 
@@ -40,18 +48,14 @@ test('loads the todos', async () => {
   todos.forEach(todo => {
     expect(screen.getByText(todo.title)).toBeInTheDocument()
   })
-
-  fetchMock.reset()
 })
 
 test('handles the error', async () => {
-  fetchMock.get(/todos/, 500)
+  fetchMock.get(/todos/, 500, { delay: 500 })
 
   setup()
 
   await waitForElementToBeRemoved(() => screen.getByText('Loading...'))
 
   expect(screen.getByText('There was an error.')).toBeInTheDocument()
-
-  fetchMock.reset()
 })

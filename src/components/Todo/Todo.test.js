@@ -6,6 +6,8 @@ import {
   waitForElementToBeRemoved,
   screen
 } from '@testing-library/react'
+import { QueryClientProvider } from 'react-query'
+import { queryClient } from '../../services/queryClient'
 import { Todo } from './Todo'
 
 const todo = {
@@ -15,14 +17,21 @@ const todo = {
 
 const setup = () => {
   return render(
-    <MemoryRouter>
-      <Todo />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <Todo />
+      </MemoryRouter>
+    </QueryClientProvider>
   )
 }
 
+beforeEach(() => {
+  queryClient.clear()
+  fetchMock.restore()
+})
+
 test('loads the todo', async () => {
-  fetchMock.get(/todos/, todo)
+  fetchMock.get(/todos/, todo, { delay: 500 })
 
   setup()
 
@@ -30,18 +39,14 @@ test('loads the todo', async () => {
 
   expect(screen.getByText(todo.title)).toBeInTheDocument()
   expect(screen.getByText(todo.description)).toBeInTheDocument()
-
-  fetchMock.reset()
 })
 
 test('handles the error', async () => {
-  fetchMock.get(/todos/, 500)
+  fetchMock.get(/todos/, 500, { delay: 500 })
 
   setup()
 
   await waitForElementToBeRemoved(() => screen.getByText('Loading...'))
 
   expect(screen.getByText('There was an error.')).toBeInTheDocument()
-
-  fetchMock.reset()
 })

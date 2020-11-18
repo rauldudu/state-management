@@ -1,20 +1,18 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
-import { useQuery } from 'react-query'
 import { fetchTodos } from '../../api/fetchTodos'
 import { usePromise } from '../../hooks/usePromise'
 
 export const TodoList = () => {
-  // const { data, loading, error, execute } = usePromise(() => fetchTodos(), [])
+  const { data, loading, error, execute } = usePromise(() => fetchTodos(), [])
   const history = useHistory()
-  const { data, isLoading, error, refetch } = useQuery('todos')
 
   if (error) {
     return (
       <>
         <h1>There was an error.</h1>
-        <button onClick={refetch}>Try again</button>
+        <button onClick={execute}>Try again</button>
       </>
     )
   }
@@ -22,8 +20,8 @@ export const TodoList = () => {
   return (
     <>
       <h1>Todos</h1>
-      {isLoading && 'Loading...'}
-      {!isLoading && (
+      {loading && 'Loading...'}
+      {!loading && (
         <>
           <button
             className="btn-create"

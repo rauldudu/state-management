@@ -1,25 +1,15 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { useNotification } from '../../hooks/notification'
-import { useQueryClient, useMutation } from 'react-query'
 
 export const AddTodo = () => {
   const history = useHistory()
-  const queryClient = useQueryClient()
-  const createNotification = useNotification()
   const [title, setTitle] = useState()
   const [description, setDescription] = useState()
   const isValid = !!title?.trim() && !!description?.trim()
-  const { mutate, isLoading, error } = useMutation('todos', {
-    onSuccess: () => {
-      queryClient.invalidateQueries('todos')
-      createNotification({ title: 'Success!', level: 'success' })
-      history.goBack()
-    },
-    onError: () => {
-      createNotification({ title: 'There was an error', level: 'error' })
-    }
-  })
+
+  const isLoading = false
+  const error = null
 
   return (
     <>
@@ -28,7 +18,6 @@ export const AddTodo = () => {
       <form
         onSubmit={e => {
           e.preventDefault()
-          mutate({ title, description })
         }}>
         <div>
           <label htmlFor="title">Title</label>

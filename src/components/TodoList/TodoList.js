@@ -1,21 +1,16 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { fetchTodos } from '../../actions/todos'
+import { fetchTodos } from '../../api/fetchTodos'
+import { usePromise } from '../../hooks/usePromise'
 
 export const TodoList = () => {
-  const dispatch = useDispatch()
-  const { data, loading, error } = useSelector(state => state.todos)
-
-  useEffect(() => {
-    dispatch(fetchTodos())
-  }, [dispatch])
+  const { data, loading, error, execute } = usePromise(() => fetchTodos(), [])
 
   if (error) {
     return (
       <>
         <h1>There was an error.</h1>
-        <button onClick={() => dispatch(fetchTodos())}>Try again</button>
+        <button onClick={execute}>Try again</button>
       </>
     )
   }

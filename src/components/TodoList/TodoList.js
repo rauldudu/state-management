@@ -1,23 +1,17 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import { useQuery } from 'react-query'
 import { useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { fetchTodos } from '../../actions/todos'
 
 export const TodoList = () => {
-  const dispatch = useDispatch()
   const history = useHistory()
-  const { data, loading, error } = useSelector(state => state.todos)
-
-  useEffect(() => {
-    dispatch(fetchTodos())
-  }, [dispatch])
+  const { data, isLoading, error, refetch } = useQuery('todos') // JS API
 
   if (error) {
     return (
       <>
         <h1>There was an error.</h1>
-        <button onClick={() => dispatch(fetchTodos())}>Try again</button>
+        <button onClick={() => refetch()}>Try again</button>
       </>
     )
   }
@@ -25,8 +19,8 @@ export const TodoList = () => {
   return (
     <>
       <h1>Todos</h1>
-      {loading && 'Loading...'}
-      {!loading && (
+      {isLoading && 'Loading...'}
+      {!isLoading && (
         <>
           <button
             className="btn-create"

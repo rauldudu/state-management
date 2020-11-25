@@ -25,3 +25,32 @@ ul {
   margin: 0;
   padding: 0;
 }
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input,
+textarea {
+  margin-bottom: 16px;
+  width: 500px;
+  padding: 4px;
+}
+
+textarea {
+  resize: vertical;
+  height: 60px;
+}
+
+button {
+  padding: 4px 8px;
+}
+
+.btn-create {
+  margin-bottom: 16px;
+}
+
+a:visited {
+  color: blue;
+}
